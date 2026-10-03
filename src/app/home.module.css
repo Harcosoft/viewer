@@ -3,7 +3,7 @@
     justify-content: center;
     width: 100%;
     margin: 0 auto;
-    padding: 28px 18px 48px;
+    padding: 24px 24px 48px;
     min-height: calc(100vh - 64px);
     position: relative;
     background: transparent;
@@ -55,22 +55,22 @@
     flex-direction: column;
     position: relative;
     z-index: 10;
-    gap: 18px;
-    padding: 18px 18px 22px;
-    border-radius: 32px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.68), rgba(255,255,255,0.46));
-    border: 1px solid rgba(148, 163, 184, 0.16);
-    box-shadow: 0 30px 70px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255,255,255,0.7);
-    backdrop-filter: blur(26px) saturate(180%);
-    -webkit-backdrop-filter: blur(26px) saturate(180%);
+    gap: 16px;
+    padding: 20px 20px 24px;
+    border-radius: 28px;
+    background: var(--background-card);
+    border: 1px solid var(--border);
+    box-shadow: var(--card-shadow);
+    backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
 }
 
 .feedHeader {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 8px 4px;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    padding: 8px 4px 14px;
+    border-bottom: 1px solid var(--border);
 }
 
 .feedHeaderText {
@@ -84,7 +84,7 @@
     font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--foreground-muted);
+    color: var(--primary);
 }
 
 .feedTitle {
@@ -111,14 +111,14 @@
     gap: 6px;
     padding: 8px 12px;
     border-radius: 999px;
-    background: linear-gradient(135deg, rgba(91, 108, 255, 0.12), rgba(168, 85, 247, 0.12));
-    border: 1px solid rgba(91, 108, 255, 0.16);
+    background: var(--secondary);
+    border: 1px solid var(--border);
     color: var(--primary);
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--foreground) 4%, transparent);
 }
 
 .iconButton {
@@ -126,10 +126,10 @@
     height: 40px;
     display: grid;
     place-items: center;
-    border-radius: 14px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(241,245,249,0.78));
-    border: 1px solid rgba(148, 163, 184, 0.16);
-    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+    border-radius: 12px;
+    background: var(--background-elevated);
+    border: 1px solid var(--border);
+    box-shadow: var(--card-shadow);
     color: var(--foreground);
 }
 
@@ -146,13 +146,13 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 5px;
-    border-radius: 30px;
-    background: linear-gradient(135deg, rgba(248,250,252,0.9), rgba(226,232,240,0.55));
-    border: 1px solid rgba(148, 163, 184, 0.14);
+    padding: 4px;
+    border-radius: 18px;
+    background: var(--secondary);
+    border: 1px solid var(--border);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
-    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.07);
+    box-shadow: var(--card-shadow);
 }
 
 .tabBtn {
@@ -164,7 +164,7 @@
     border: none;
     background: transparent;
     cursor: pointer;
-    border-radius: 24px;
+    border-radius: 14px;
     transition: all var(--transition-fast);
     font-family: var(--font-dm-sans), sans-serif;
     outline: none;
@@ -187,30 +187,30 @@
 .activeTabPill {
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(91, 108, 255, 0.14), rgba(168, 85, 247, 0.12));
-    border: 1px solid rgba(91, 108, 255, 0.2);
-    border-radius: 24px;
-    box-shadow: 0 10px 24px rgba(91, 108, 255, 0.12);
+    background: var(--background-elevated);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--card-shadow);
     z-index: -1;
 }
 
 /* Stories Section Glass Container */
 .storyBarCard {
     width: 100%;
-    background: linear-gradient(180deg, rgba(255,255,255,0.68), rgba(255,255,255,0.45));
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid rgba(148, 163, 184, 0.16);
-    border-radius: 26px;
+    background: var(--background-card);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid var(--border);
+    border-radius: 22px;
     padding: 12px 16px 6px;
-    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+    box-shadow: var(--card-shadow);
     transition: border-color var(--transition-fast), transform var(--transition-smooth), box-shadow var(--transition-smooth);
 }
 
 .storyBarCard:hover {
-    border-color: rgba(91, 108, 255, 0.18);
+    border-color: var(--border-hover);
     transform: translateY(-1px);
-    box-shadow: 0 18px 38px rgba(91, 108, 255, 0.08);
+    box-shadow: var(--card-shadow-hover);
 }
 
 .storyTopBar {

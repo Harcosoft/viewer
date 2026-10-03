@@ -68,19 +68,22 @@ const Sidebar = () => {
             </div>
 
             {/* Navigation List */}
-            <div className={styles.navItems}>
+            <nav className={styles.navItems} aria-label="Primary navigation">
                 {navGroups.map((group) => (
                     <div className={styles.navGroup} key={group.label}>
                         <span className={styles.groupLabel}>{group.label}</span>
                         {group.items.map((item) => {
-                            const isActive = pathname === item.href;
+                            const isActive = item.href === '/'
+                                ? pathname === '/'
+                                : pathname === item.href || pathname.startsWith(`${item.href}/`);
                             const Icon = item.icon;
 
                             return (
                                 <Link
                                     key={item.label}
                                     href={item.href}
-                                    className={`${styles.navItem} ${isActive ? styles.active : ''}`}
+                                    className={`${styles.navItem} ${item.href === '/create' ? styles.createNavItem : ''} ${isActive ? styles.active : ''}`}
+                                    aria-current={isActive ? 'page' : undefined}
                                 >
                                     {isActive && (
                                         <motion.div
@@ -102,7 +105,7 @@ const Sidebar = () => {
                         })}
                     </div>
                 ))}
-            </div>
+            </nav>
 
             {/* Bottom Actions & User Profile Card */}
             <div className={styles.bottomSection}>

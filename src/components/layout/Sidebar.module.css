@@ -5,22 +5,22 @@
     bottom: 16px;
     width: var(--sidebar-width, 256px);
     height: auto;
-    background: rgba(255, 255, 255, 0.42);
+    background: var(--background-card);
     backdrop-filter: blur(28px) saturate(180%);
     -webkit-backdrop-filter: blur(28px) saturate(180%);
-    border: 1px solid rgba(148, 163, 184, 0.2);
-    border-radius: 30px;
+    border: 1px solid var(--border);
+    border-radius: 24px;
     display: flex;
     flex-direction: column;
-    padding: 28px 18px 20px;
+    padding: 24px 16px 16px;
     z-index: 900;
     transition: width var(--transition-smooth), transform var(--transition-smooth);
-    box-shadow: 0 24px 64px rgba(15, 23, 42, 0.10), inset 0 1px 0 rgba(255,255,255,0.6);
+    box-shadow: var(--card-shadow);
 }
 
 /* Brand Logo Section */
 .logoSection {
-    padding: 4px 10px 34px;
+    padding: 4px 8px 28px;
 }
 
 .logoLink {
@@ -72,7 +72,7 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    margin-bottom: 22px;
+    margin-bottom: 16px;
 }
 
 .groupLabel {
@@ -93,8 +93,8 @@
     display: flex;
     align-items: center;
     gap: 13px;
-    padding: 12px 13px;
-    border-radius: 14px;
+    padding: 11px 12px;
+    border-radius: 12px;
     color: var(--foreground-muted);
     text-decoration: none;
     font-size: 15px;
@@ -106,24 +106,52 @@
 
 .navItem:hover {
     color: var(--foreground);
-    transform: translateX(3px);
-    background: rgba(255, 255, 255, 0.35);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+    transform: translateX(2px);
+    background: var(--secondary);
 }
 
 .navItem.active {
-    color: #ffffff;
+    color: var(--foreground);
     font-weight: 700;
 }
 
 .activePill {
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(91,108,255,0.90), rgba(168,85,247,0.85));
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 14px;
+    background: var(--secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
     z-index: -1;
-    box-shadow: 0 14px 30px rgba(91, 108, 255, 0.18);
+    box-shadow: inset 3px 0 0 var(--primary);
+}
+
+.createNavItem:not(.active) {
+    margin-top: 2px;
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 8px 18px var(--primary-glow);
+}
+
+.createNavItem:not(.active):hover {
+    background: var(--primary-hover);
+    color: #fff;
+    box-shadow: 0 10px 22px var(--primary-glow);
+}
+
+.createNavItem .navIcon,
+.createNavItem:hover .navIcon,
+.createNavItem.active .navIcon {
+    color: inherit;
+}
+
+.createNavItem.active {
+    color: #fff;
+}
+
+.createNavItem.active .activePill {
+    background: var(--primary);
+    border-color: transparent;
+    box-shadow: 0 8px 18px var(--primary-glow);
 }
 
 .iconWrap {
@@ -145,7 +173,7 @@
 }
 
 .navItem.active .navIcon {
-    color: #e34d72;
+    color: var(--primary);
 }
 
 .label {
@@ -169,8 +197,8 @@
     justify-content: space-between;
     padding: 8px 12px;
     border-radius: 16px;
-    background: rgba(255,255,255,0.38);
-    border: 1px solid rgba(148, 163, 184, 0.18);
+    background: var(--background-elevated);
+    border: 1px solid var(--border);
     backdrop-filter: blur(12px);
 }
 

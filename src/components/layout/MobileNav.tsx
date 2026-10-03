@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Search, PlusSquare, Film, User, MessageCircle } from 'lucide-react';
+import { Home, Search, PlusSquare, Film, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import styles from './MobileNav.module.css';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
@@ -22,35 +22,39 @@ const MobileNav = () => {
     const handleHaptic = async () => {
         try {
             await Haptics.impact({ style: ImpactStyle.Light });
-        } catch (e) {
+        } catch {
             // Capacitor not available
         }
     };
 
     return (
-        <nav className={styles.mobileNav}>
+        <nav className={styles.mobileNav} aria-label="Mobile navigation">
             <div className={styles.navContainer}>
                 {navItems.map((item) => {
-                    const isActive = pathname === item.href;
+                    const isActive = item.href === '/'
+                        ? pathname === '/'
+                        : pathname === item.href || pathname.startsWith(`${item.href}/`);
                     const Icon = item.icon;
 
                     return (
                         <Link
                             key={item.label}
                             href={item.href}
-                            className={`${styles.navItem} ${isActive ? styles.active : ''}`}
+                            className={`${styles.navItem} ${item.label === 'Create' ? styles.createItem : ''} ${isActive ? styles.active : ''}`}
                             onClick={handleHaptic}
+                            aria-label={item.label}
+                            aria-current={isActive ? 'page' : undefined}
                         >
                             <motion.div
                                 className={styles.iconWrap}
                                 initial={false}
-                                animate={isActive ? { y: -8, scale: 1.2 } : { y: 0, scale: 1 }}
+                                animate={isActive ? { y: -2, scale: 1.06 } : { y: 0, scale: 1 }}
                                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                             >
                                 <Icon
                                     size={24}
                                     strokeWidth={isActive ? 2.5 : 2}
-                                    color={isActive ? 'var(--primary)' : 'var(--foreground-muted)'}
+                                    color={item.label === 'Create' ? '#ffffff' : isActive ? 'var(--primary)' : 'var(--foreground-muted)'}
                                 />
                                 {isActive && (
                                     <motion.div
@@ -59,6 +63,7 @@ const MobileNav = () => {
                                     />
                                 )}
                             </motion.div>
+                            <span className={styles.navLabel}>{item.label}</span>
                         </Link>
                     );
                 })}
