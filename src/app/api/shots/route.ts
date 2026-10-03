@@ -9,8 +9,25 @@ export async function GET(request: Request) {
         const page = parseInt(searchParams.get('page') || '1');
         const limit = parseInt(searchParams.get('limit') || '10');
         const skip = (page - 1) * limit;
+        const followingOnly = searchParams.get('feed') === 'following';
+        const session = followingOnly ? await getSession() : null;
+
+        if (followingOnly && !session) {
+            return NextResponse.json({ error: 'Sign in to view videos from creators you follow' }, { status: 401 });
+        }
+
+        const following = session
+            ? await prisma.follows.findMany({
+                where: { followerId: session.id },
+                select: { followingId: true }
+            })
+            : [];
+        const followedUserIds = session
+            ? [...following.map(follow => follow.followingId), session.id]
+            : undefined;
 
         const shots = await prisma.shot.findMany({
+            where: followedUserIds ? { userId: { in: followedUserIds } } : undefined,
             include: {
                 user: {
                     select: {
@@ -36,8 +53,8 @@ export async function GET(request: Request) {
             skip,
             take: limit
         });
-        // If no shots found in DB, fall back to mock data
-        if (!shots || shots.length === 0) {
+        // Use sample reels when no database videos exist in the public feed.
+        if ((!shots || shots.length === 0) && !followingOnly && page === 1) {
             const fallback = MOCK_SHOTS.slice(skip, skip + limit).map(s => ({
                 id: String(s.id),
                 video: s.video,
@@ -56,12 +73,19 @@ export async function GET(request: Request) {
         return NextResponse.json(shots);
     } catch (error) {
         console.error('API Error (GET /api/shots):', error);
-        // If Prisma or DB is not available, return mock shots so frontend still works
+        if (new URL(request.url).searchParams.get('feed') === 'following') {
+            return NextResponse.json({ error: 'Following videos are temporarily unavailable' }, { status: 503 });
+        }
+        // Keep the public feed available when the database cannot be reached.
         try {
             const { searchParams } = new URL(request.url);
             const page = parseInt(searchParams.get('page') || '1');
             const limit = parseInt(searchParams.get('limit') || '10');
             const skip = (page - 1) * limit;
+            if (page !== 1) {
+                return NextResponse.json([]);
+            }
+
             const fallback = MOCK_SHOTS.slice(skip, skip + limit).map(s => ({
                 id: String(s.id),
                 video: s.video,

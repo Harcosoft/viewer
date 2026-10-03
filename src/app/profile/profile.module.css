@@ -1,5 +1,5 @@
 ﻿.profile {
-    padding: 40px 0;
+    padding: 28px 0;
     position: relative;
     z-index: 10;
 }
@@ -8,11 +8,11 @@
 .header {
     display: flex;
     flex-direction: column;
-    margin-bottom: 48px;
+    margin-bottom: 32px;
     background: var(--background-card);
     backdrop-filter: blur(40px) saturate(200%);
     -webkit-backdrop-filter: blur(40px) saturate(200%);
-    border-radius: 40px;
+    border-radius: 28px;
     border: 1px solid var(--border);
     box-shadow:
         0 20px 60px rgba(0, 0, 0, 0.04),
@@ -20,17 +20,17 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: hidden;
-    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: box-shadow var(--transition-smooth), border-color var(--transition-fast);
 }
 
 .coverPhoto {
-    height: 200px;
+    height: clamp(150px, 22vw, 230px);
     width: 100%;
     position: relative;
     z-index: 1;
     overflow: hidden;
-    border-top-left-radius: 40px;
-    border-top-right-radius: 40px;
+    border-top-left-radius: 28px;
+    border-top-right-radius: 28px;
 }
 
 .coverGradient {
@@ -52,11 +52,12 @@
 
 .headerContent {
     display: flex;
-    gap: 64px;
-    padding: 0 64px 48px;
+    align-items: flex-start;
+    gap: 36px;
+    padding: 0 40px 36px;
     position: relative;
     z-index: 2;
-    margin-top: -60px;
+    margin-top: -54px;
     /* Overlap the cover photo */
 }
 
@@ -85,23 +86,21 @@
 }
 
 .header:hover {
-    box-shadow:
-        0 40px 80px rgba(0, 0, 0, 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 1);
-    transform: translateY(-4px);
+    border-color: var(--border-hover);
+    box-shadow: var(--card-shadow-hover);
 }
 
 .avatarSection {
-    flex: 0 0 160px;
+    flex: 0 0 136px;
     display: flex;
     justify-content: center;
     position: relative;
 }
 
 .avatarRing {
-    width: 156px;
-    height: 156px;
-    border-radius: 52px;
+    width: 136px;
+    height: 136px;
+    border-radius: 40px;
     padding: 4px;
     background: linear-gradient(135deg, #6366f1 0%, #0ea5e9 50%, #8b5cf6 100%);
     display: flex;
@@ -113,14 +112,13 @@
 }
 
 .avatarRing:hover {
-    transform: scale(1.05) rotate(5deg);
-    border-radius: 75px;
+    transform: scale(1.03);
 }
 
 .avatar {
     width: 100%;
     height: 100%;
-    border-radius: 56px;
+    border-radius: 36px;
     object-fit: cover;
     border: 5px solid var(--background);
 }
@@ -129,16 +127,16 @@
     position: absolute;
     bottom: -5px;
     right: -5px;
-    width: 44px;
-    height: 44px;
-    background: #0095f6;
-    border: 4px solid #0f0f0f;
-    border-radius: 16px;
+    width: 36px;
+    height: 36px;
+    background: var(--primary);
+    border: 3px solid var(--background);
+    border-radius: 13px;
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 900;
     cursor: pointer;
     box-shadow: 0 8px 16px rgba(0, 149, 246, 0.3);
@@ -149,18 +147,21 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding-top: 80px;
+    min-width: 0;
+    padding-top: 64px;
 }
 
 .topRow {
     display: flex;
     align-items: center;
-    gap: 32px;
-    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 24px;
 }
 
 .username {
-    font-size: 24px;
+    margin: 0;
+    font-size: clamp(21px, 3vw, 28px);
     font-weight: 800;
     letter-spacing: -0.03em;
     color: var(--foreground);
@@ -170,7 +171,8 @@
 .actionButtons {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
+    margin-left: auto;
 }
 
 .editButton,
@@ -179,28 +181,29 @@
     background: var(--background-elevated);
     border: 1px solid var(--border);
     backdrop-filter: blur(12px);
-    padding: 9px 20px;
+    min-height: 40px;
+    padding: 0 16px;
     border-radius: 12px;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--foreground);
     cursor: pointer;
     letter-spacing: 0.2px;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
 }
 
 .editButton:hover,
 .archiveBtn:hover {
-    transform: translateY(-4px);
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
+    background: var(--secondary-hover);
+    border-color: var(--border-hover);
 }
 
 .settingsBtn {
-    width: 48px;
-    height: 48px;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.05);
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--background-elevated);
     border: 1px solid var(--border);
     display: flex;
     align-items: center;
@@ -217,30 +220,36 @@
 /* Stats Styling */
 .statsRow {
     display: flex;
-    gap: 50px;
-    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 24px;
 }
 
 .statItem {
+    min-width: 104px;
     display: flex;
     flex-direction: column;
-    padding: 0;
-    border: 0;
-    background: transparent;
+    gap: 5px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--background-card);
     color: inherit;
     font: inherit;
     text-align: left;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
     cursor: pointer;
 }
 
 .statItem:hover {
-    transform: translateY(-4px) scale(1.05);
+    transform: translateY(-2px);
+    border-color: var(--border-hover);
+    background: var(--secondary);
 }
 
 .statNumber {
-    font-size: 30px;
-    font-weight: 900;
+    font-size: 24px;
+    font-weight: 800;
     color: var(--foreground);
     letter-spacing: -0.05em;
     font-family: var(--font-space-grotesk), sans-serif;
@@ -252,8 +261,7 @@
     font-weight: 600;
     color: var(--foreground-muted);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-top: 6px;
+    letter-spacing: 0.06em;
     font-family: var(--font-dm-sans), sans-serif;
 }
 
@@ -1554,5 +1562,247 @@
 
     .gridItem {
         border-radius: 8px;
+    }
+}
+
+.profile {
+    padding-top: 24px;
+}
+
+.header {
+    border-radius: 24px;
+    background: var(--background-card);
+    box-shadow: var(--card-shadow);
+}
+
+.coverPhoto {
+    border-radius: 24px 24px 0 0;
+}
+
+.headerContent {
+    gap: 28px;
+    padding: 0 32px 32px;
+}
+
+.avatarSection {
+    flex-basis: 120px;
+}
+
+.avatarRing {
+    width: 120px;
+    height: 120px;
+    border-radius: 34px;
+}
+
+.avatar {
+    border-radius: 30px;
+}
+
+.infoSection {
+    padding-top: 58px;
+}
+
+.topRow {
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.actionButtons {
+    gap: 8px;
+}
+
+.editButton,
+.archiveBtn {
+    min-height: 38px;
+    border-radius: 11px;
+}
+
+.statsRow {
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.statItem {
+    min-width: 104px;
+    gap: 4px;
+    padding: 11px 14px;
+    margin: 0;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--background-elevated);
+}
+
+.statItem:last-child {
+    border-right: 1px solid var(--border);
+}
+
+.statItem:not(button) {
+    cursor: default;
+}
+
+.statItem:is(button):hover {
+    border-color: var(--border-hover);
+    background: var(--secondary-hover);
+}
+
+.statNumber {
+    font-size: 23px;
+}
+
+.statLabel {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+}
+
+.highlightsSection {
+    gap: 20px;
+    padding-bottom: 36px;
+}
+
+.highlightCircle {
+    width: 72px;
+    height: 72px;
+    border-radius: 21px;
+    background: var(--background-card);
+}
+
+.highlightImg {
+    border-radius: 18px;
+}
+
+.highlightItem:hover .highlightCircle {
+    transform: translateY(-3px);
+    background: var(--secondary);
+    border-color: var(--border-hover);
+    box-shadow: var(--card-shadow);
+}
+
+.tabs {
+    gap: 28px;
+    margin-bottom: 24px;
+    border-bottom-color: var(--border);
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-hover) transparent;
+}
+
+.tab {
+    padding: 14px 3px 15px;
+    font-size: 11px;
+    letter-spacing: 0.07em;
+}
+
+.tab:focus-visible,
+.statItem:focus-visible,
+.editButton:focus-visible,
+.archiveBtn:focus-visible,
+.settingsBtn:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+}
+
+.activeTab {
+    color: var(--foreground) !important;
+}
+
+.activeTab::after {
+    background: var(--primary);
+}
+
+.grid {
+    gap: 12px;
+}
+
+.gridItem {
+    border-radius: 16px;
+    border-color: var(--border);
+}
+
+.gridItem:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--card-shadow-hover);
+    border-color: var(--border-hover);
+}
+
+@media (max-width: 1024px) {
+    .headerContent {
+        gap: 24px;
+        padding: 0 26px 28px;
+    }
+
+    .tabs {
+        gap: 22px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        border-radius: 20px;
+    }
+
+    .coverPhoto {
+        border-radius: 20px 20px 0 0;
+    }
+
+    .headerContent {
+        padding: 0 18px 26px;
+        gap: 12px;
+    }
+
+    .avatarSection {
+        flex-basis: 108px;
+    }
+
+    .avatarRing {
+        width: 108px;
+        height: 108px;
+        border-radius: 31px;
+    }
+
+    .avatar {
+        border-radius: 27px;
+    }
+
+    .topRow {
+        align-items: center;
+        gap: 12px;
+    }
+
+    .actionButtons {
+        justify-content: center;
+    }
+
+    .statsRow {
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .statItem {
+        min-width: 94px;
+        padding: 10px 12px;
+        border-right: 1px solid var(--border);
+        text-align: center;
+    }
+
+    .statNumber {
+        font-size: 20px;
+    }
+
+    .highlightsSection {
+        gap: 16px;
+        padding-bottom: 28px;
+    }
+
+    .tabs {
+        gap: 18px;
+        margin-right: 0;
+        margin-left: 0;
+    }
+
+    .grid {
+        gap: 6px;
+    }
+
+    .gridItem {
+        border-radius: 10px;
     }
 }

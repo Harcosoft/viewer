@@ -20,8 +20,8 @@ export type FeedItem = {
 
 export const FeedService = {
     // Public: Get Feed
-    async generateFeed(userId: string, page = 1, limit = 20): Promise<any[]> {
-        return await FeedService._generateRun(userId, page, limit);
+    async generateFeed(userId: string, page = 1, limit = 20, followingOnly = false): Promise<any[]> {
+        return await FeedService._generateRun(userId, page, limit, followingOnly);
     },
 
     // Public: Trigger Pre-computation (e.g. from Cron) - simplified
@@ -31,7 +31,7 @@ export const FeedService = {
     },
 
     // Internal: Actual generation logic
-    async _generateRun(userId: string, page = 1, limit = 20): Promise<any[]> {
+    async _generateRun(userId: string, page = 1, limit = 20, followingOnly = false): Promise<any[]> {
         const offset = (page - 1) * limit;
 
         // 1. Get User's Social Graph (Who they follow)
@@ -47,7 +47,7 @@ export const FeedService = {
 
         // 2. Fetch Personal Content (Following + Self) via Prisma
         const personalPosts = await prisma.post.findMany({
-            where: { userId: { in: userIdsToFetch } },
+            where: { userId: { in: followingOnly ? followingIds : userIdsToFetch } },
             include: {
                 user: { select: { username: true, avatar: true, fullName: true } },
                 likes: true,
@@ -55,8 +55,20 @@ export const FeedService = {
                 media: { orderBy: { order: 'asc' } },
             },
             orderBy: { createdAt: 'desc' },
-            take: 50 // Fetch recent pool
+            skip: followingOnly ? offset : 0,
+            take: followingOnly ? limit : 50 // Fetch recent pool
         });
+
+        if (followingOnly) {
+            return personalPosts.map(p => ({
+                ...p,
+                type: 'post',
+                image: p.media?.[0]?.url || '',
+                likesCount: p.likes?.length || 0,
+                commentsCount: p.comments?.length || 0,
+                isLiked: p.likes?.some((like: any) => like.userId === userId)
+            }));
+        }
 
         // 3. Fetch Suggested Content (Global Hot Pool) via Prisma
         const suggestedPool = await prisma.post.findMany({

@@ -265,6 +265,71 @@
     margin-top: 16px;
 }
 
+.feedMessage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 36px 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--background-card);
+    text-align: center;
+}
+
+.feedMessage h2 {
+    margin: 0;
+    color: var(--foreground);
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+.feedMessage p {
+    max-width: 360px;
+    color: var(--foreground-muted);
+    font-size: 0.95rem;
+}
+
+.emptyFeedIcon {
+    display: grid;
+    width: 48px;
+    height: 48px;
+    place-items: center;
+    border-radius: 16px;
+    background: var(--secondary);
+    color: var(--primary);
+}
+
+.feedMessageAction {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 4px;
+    padding: 0 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--background-elevated);
+    color: var(--foreground);
+    font-size: 0.9rem;
+    font-weight: 700;
+    transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.feedMessageAction:hover {
+    transform: translateY(-1px);
+    border-color: var(--primary);
+    background: var(--secondary);
+}
+
+.feedMessageAction:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+}
+
 /* Pull to Refresh Indicator */
 .pullIndicator {
     position: absolute;

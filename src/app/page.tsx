@@ -1,17 +1,24 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import Link from 'next/link';
 import Post from '@/components/feed/Post';
 import StoryBar from '@/components/feed/StoryBar';
 import styles from './home.module.css';
 import Loader from '@/components/common/Loader';
-import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import { isPusherConfigured, pusherClient } from '@/lib/pusher';
-import { RefreshCw, Sparkles, Flame } from 'lucide-react';
+import { RefreshCw, Sparkles, Flame, Compass } from 'lucide-react';
 import { triggerHapticNotification } from '@/lib/haptics';
 import { NotificationType } from '@capacitor/haptics';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
+
+class FeedRequestError extends Error {
+  constructor(readonly status: number) {
+    super(`Feed request failed with status ${status}`);
+  }
+}
 
 export default function Home() {
   const [feedItems, setFeedItems] = useState<any[]>([]);
@@ -21,35 +28,22 @@ export default function Home() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [feedTab, setFeedTab] = useState<'forYou' | 'following'>('forYou');
+  const [feedError, setFeedError] = useState<string | null>(null);
   const touchStart = useRef(0);
+  const feedRequestId = useRef(0);
 
-  const fetchContent = useCallback(async (pageNum: number) => {
-    try {
+  const fetchContent = useCallback(async (pageNum: number, feed: 'forYou' | 'following') => {
+      const feedParam = feed === 'following' ? '&feed=following' : '';
       const [postsRes, shotsRes] = await Promise.all([
-        fetch(`/api/posts?page=${pageNum}&limit=8`),
-        fetch(`/api/shots?page=${pageNum}&limit=2`)
+        fetch(`/api/posts?page=${pageNum}&limit=8${feedParam}`),
+        fetch(`/api/shots?page=${pageNum}&limit=2${feedParam}`)
       ]);
 
-      let postsData = [];
-      let shotsData = [];
-
-      if (postsRes.ok && shotsRes.ok) {
-        const postsContent = postsRes.headers.get('content-type');
-        if (postsContent && postsContent.includes('application/json')) {
-            postsData = await postsRes.json();
-        }
-        
-        const shotsContent = shotsRes.headers.get('content-type');
-        if (shotsContent && shotsContent.includes('application/json')) {
-            shotsData = await shotsRes.json();
-        }
+      if (!postsRes.ok || !shotsRes.ok) {
+        throw new FeedRequestError(!postsRes.ok ? postsRes.status : shotsRes.status);
       }
 
-      if (pageNum === 1 && (!postsData || postsData.length === 0) && (!shotsData || shotsData.length === 0)) {
-        const { MOCK_POSTS, MOCK_SHOTS } = await import('@/constants/mockData');
-        postsData = MOCK_POSTS.slice(0, 8);
-        shotsData = MOCK_SHOTS.slice(0, 2);
-      }
+      const [postsData, shotsData] = await Promise.all([postsRes.json(), shotsRes.json()]);
 
       const formattedPosts = postsData.map((post: any) => ({
         id: post.id,
@@ -89,27 +83,29 @@ export default function Home() {
       }
 
       return combined;
-    } catch (err) {
-      console.error('Failed to fetch content:', err);
-      if (pageNum === 1) {
-        const { MOCK_POSTS } = await import('@/constants/mockData');
-        return MOCK_POSTS.slice(0, 8).map(p => ({ ...p, user: p.user || { name: 'User' }, type: 'post', time: 'Just now' }));
-      }
-      return [];
-    }
   }, []);
 
   const loadMoreItems = useCallback(async () => {
+    const requestId = feedRequestId.current;
     const nextPage = page + 1;
-    const data = await fetchContent(nextPage);
+    try {
+      const data = await fetchContent(nextPage, feedTab);
+      if (requestId !== feedRequestId.current) return;
 
-    if (data.length === 0) {
-      setHasMore(false);
-    } else {
-      setFeedItems(prev => [...prev, ...data]);
-      setPage(nextPage);
+      if (data.length === 0) {
+        setHasMore(false);
+      } else {
+        setFeedItems(prev => [...prev, ...data]);
+        setPage(nextPage);
+      }
+    } catch (error) {
+      if (requestId === feedRequestId.current) {
+        console.error('Failed to load more feed items:', error);
+        setFeedError('Could not load more posts. Please try again.');
+        setHasMore(false);
+      }
     }
-  }, [fetchContent, page]);
+  }, [feedTab, fetchContent, page]);
 
   const { elementRef: lastElementRef, isLoading: fetchingMore } = useInfiniteScroll(
     loadMoreItems,
@@ -117,15 +113,27 @@ export default function Home() {
   );
 
   const onRefresh = useCallback(async () => {
+    const requestId = feedRequestId.current;
     setIsRefreshing(true);
     triggerHapticNotification(NotificationType.Success);
-    const data = await fetchContent(1);
-    setFeedItems(data);
-    setPage(1);
-    setHasMore(data.length > 0);
-    setIsRefreshing(false);
-    setPullProgress(0);
-  }, [fetchContent]);
+    setFeedError(null);
+    try {
+      const data = await fetchContent(1, feedTab);
+      if (requestId === feedRequestId.current) {
+        setFeedItems(data);
+        setPage(1);
+        setHasMore(data.length > 0);
+      }
+    } catch (error) {
+      console.error('Failed to refresh feed:', error);
+      if (requestId === feedRequestId.current) setFeedError('Could not refresh the feed. Please try again.');
+    } finally {
+      if (requestId === feedRequestId.current) {
+        setIsRefreshing(false);
+        setPullProgress(0);
+      }
+    }
+  }, [feedTab, fetchContent]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (window.scrollY === 0) {
@@ -151,27 +159,72 @@ export default function Home() {
     touchStart.current = 0;
   };
 
-  // Initial Load
+  // Load the selected feed and discard responses from a previous tab.
   useEffect(() => {
-    let isMounted = true;
+    const requestId = ++feedRequestId.current;
+    let isCurrent = true;
+
     const init = async () => {
       setLoading(true);
-      const data = await fetchContent(1);
-      if (isMounted) {
-        setFeedItems(data);
-        setLoading(false);
-        if (data.length === 0) setHasMore(false);
+      setFeedItems([]);
+      setPage(1);
+      setHasMore(true);
+      setFeedError(null);
+      try {
+        const data = await fetchContent(1, feedTab);
+        if (isCurrent && requestId === feedRequestId.current) {
+          setFeedItems(data);
+          setHasMore(data.length > 0);
+        }
+      } catch (error) {
+        console.error(`Failed to load ${feedTab} feed:`, error);
+        if (isCurrent && requestId === feedRequestId.current) {
+          setHasMore(false);
+          setFeedError(
+            error instanceof FeedRequestError && error.status === 401
+              ? 'Sign in to see posts and videos from creators you follow.'
+              : `Could not load the ${feedTab === 'following' ? 'Following' : 'For You'} feed. Please try again.`
+          );
+        }
+      } finally {
+        if (isCurrent && requestId === feedRequestId.current) setLoading(false);
       }
     };
     init();
-    return () => { isMounted = false; };
-  }, [fetchContent]);
+    return () => {
+      isCurrent = false;
+    };
+  }, [feedTab, fetchContent]);
+
+  const selectFeed = (feed: 'forYou' | 'following') => {
+    if (feed === feedTab) return;
+    setFeedTab(feed);
+    triggerHapticNotification(NotificationType.Success);
+  };
+
+  const retryFeed = () => {
+    setFeedError(null);
+    setLoading(true);
+    const requestId = ++feedRequestId.current;
+    fetchContent(1, feedTab).then(data => {
+      if (requestId === feedRequestId.current) {
+        setFeedItems(data);
+        setPage(1);
+        setHasMore(data.length > 0);
+      }
+    }).catch(error => {
+      console.error(`Failed to retry ${feedTab} feed:`, error);
+      if (requestId === feedRequestId.current) setFeedError('The feed is still unavailable. Please try again.');
+    }).finally(() => {
+      if (requestId === feedRequestId.current) setLoading(false);
+    });
+  };
 
   // Real-time Updates
   useEffect(() => {
     if (!isPusherConfigured) return;
 
-    const channel = pusherClient.subscribe('feed');
+    pusherClient.subscribe('feed');
     // ... (bind events kept)
     return () => { pusherClient.unsubscribe('feed'); };
   }, []);
@@ -245,13 +298,13 @@ export default function Home() {
 
         {/* Feed Segmented Switcher Tabs */}
         <div className={styles.tabBarContainer}>
-          <div className={styles.tabGroup}>
+          <div className={styles.tabGroup} role="tablist" aria-label="Choose feed">
             <button
+              type="button"
               className={`${styles.tabBtn} ${feedTab === 'forYou' ? styles.active : ''}`}
-              onClick={() => {
-                setFeedTab('forYou');
-                triggerHapticNotification(NotificationType.Success);
-              }}
+              role="tab"
+              aria-selected={feedTab === 'forYou'}
+              onClick={() => selectFeed('forYou')}
             >
               {feedTab === 'forYou' && (
                 <motion.div
@@ -263,11 +316,11 @@ export default function Home() {
               <span className={styles.tabLabel}>For You</span>
             </button>
             <button
+              type="button"
               className={`${styles.tabBtn} ${feedTab === 'following' ? styles.active : ''}`}
-              onClick={() => {
-                setFeedTab('following');
-                triggerHapticNotification(NotificationType.Success);
-              }}
+              role="tab"
+              aria-selected={feedTab === 'following'}
+              onClick={() => selectFeed('following')}
             >
               {feedTab === 'following' && (
                 <motion.div
@@ -305,6 +358,28 @@ export default function Home() {
             ))}
           </AnimatePresence>
         </motion.div>
+
+        {!loading && feedError && (
+          <div className={styles.feedMessage} role="alert">
+            <p>{feedError}</p>
+            <button type="button" className={styles.feedMessageAction} onClick={retryFeed}>
+              <RefreshCw size={16} />
+              Try again
+            </button>
+          </div>
+        )}
+
+        {!loading && !feedError && feedItems.length === 0 && feedTab === 'following' && (
+          <div className={styles.feedMessage}>
+            <div className={styles.emptyFeedIcon}><Compass size={22} /></div>
+            <h2>Your feed starts with a follow</h2>
+            <p>Follow creators to see their latest posts and videos here.</p>
+            <Link href="/search" className={styles.feedMessageAction}>
+              <Compass size={16} />
+              Discover creators
+            </Link>
+          </div>
+        )}
 
         {/* Infinite Scroll Trigger */}
         <div ref={lastElementRef} className={styles.loaderContainer}>
