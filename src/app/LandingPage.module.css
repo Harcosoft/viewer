@@ -75,17 +75,18 @@
 .content {
     position: relative;
     z-index: 2;
-    width: min(1100px, calc(100vw - 32px));
-    max-width: 1100px;
-    padding: 40px;
+    width: min(1160px, calc(100vw - 32px));
+    max-width: 1160px;
+    padding: 30px;
     box-sizing: border-box;
 }
 
 .gridContainer {
     display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 80px;
+    grid-template-columns: minmax(0, 1.2fr) minmax(340px, 0.88fr);
+    gap: 42px;
     align-items: center;
+    padding: 16px 8px 0;
 }
 
 .infoSection {
@@ -170,9 +171,10 @@
 
 .featureGrid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
     margin-top: 10px;
+    max-width: 560px;
 }
 
 .featureItem {
@@ -182,39 +184,42 @@
     color: var(--foreground);
     font-weight: 700;
     font-size: 14px;
-    background: rgba(255, 255, 255, 0.7);
-    padding: 16px 20px;
-    border-radius: 18px;
-    border: 1px solid rgba(91, 108, 255, 0.1);
-    letter-spacing: 0.18px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.56), rgba(255, 255, 255, 0.26));
+    padding: 16px 18px;
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    letter-spacing: 0.08px;
     transition: all 0.35s ease;
-    backdrop-filter: blur(20px);
-    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.04);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 12px 28px rgba(91, 108, 255, 0.08), inset 0 1px 0 rgba(255,255,255,0.5);
 }
 
 .featureItem:hover {
-    transform: translateY(-4px) scale(1.02);
-    background: rgba(255, 255, 255, 0.92);
+    transform: translateY(-4px);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(236, 233, 255, 0.5));
     border-color: rgba(91, 108, 255, 0.18);
     box-shadow: 0 16px 30px rgba(79, 70, 229, 0.12);
 }
 
 .featureIcon {
     color: #5b6cff;
+    background: rgba(91,108,255,0.12);
+    border-radius: 12px;
+    padding: 8px;
 }
 
 .loginCard {
-    background: rgba(255, 255, 255, 0.68);
-    backdrop-filter: blur(40px) saturate(200%);
-    -webkit-backdrop-filter: blur(40px) saturate(200%);
-    border: 1px solid rgba(148, 163, 184, 0.2);
-    padding: 48px;
-    border-radius: 34px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.42));
+    backdrop-filter: blur(32px) saturate(180%);
+    -webkit-backdrop-filter: blur(32px) saturate(180%);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    padding: 42px 38px;
+    border-radius: 30px;
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 28px;
-    box-shadow: 0 24px 80px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    box-shadow: 0 30px 80px rgba(15, 23, 42, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.55);
     box-sizing: border-box;
 }
 
@@ -352,14 +357,14 @@
 }
 
 .loginBtn {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 48%, #ec4899 100%);
     background-size: 200% auto;
     color: #ffffff;
     font-weight: 800;
     padding: 17px 18px;
-    border-radius: 16px;
-    font-size: 0.96rem;
-    font-family: var(--font-space-grotesk), var(--font-dm-sans), sans-serif;
+    border-radius: 18px;
+    font-size: 0.92rem;
+    font-family: var(--font-display);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     transition: all 0.35s ease;
@@ -367,11 +372,11 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.16);
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 14px 30px rgba(79, 70, 229, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    box-shadow: 0 20px 35px rgba(91, 108, 255, 0.24), inset 0 1px 0 rgba(255,255,255,0.24);
 }
 
 .loginBtn:hover:not(:disabled) {

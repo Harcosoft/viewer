@@ -14,6 +14,23 @@ export default function GlobalError({
     const router = useRouter();
 
     useEffect(() => {
+        const isStaleChunkError = /module factory is not available|chunkloaderror|failed to load (?:a )?chunk|loading chunk \d+ failed/i
+            .test(error.message);
+
+        if (isStaleChunkError) {
+            try {
+                const recoveryKey = 'viewer:chunk-load-recovery';
+                const lastRecoveryAttempt = Number(sessionStorage.getItem(recoveryKey));
+                if (!lastRecoveryAttempt || Date.now() - lastRecoveryAttempt > 60_000) {
+                    sessionStorage.setItem(recoveryKey, String(Date.now()));
+                    window.location.reload();
+                    return;
+                }
+            } catch (recoveryError) {
+                console.warn('Automatic recovery from a stale app bundle failed:', recoveryError);
+            }
+        }
+
         console.error('App Critical Error:', error);
     }, [error]);
 

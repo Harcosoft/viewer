@@ -1,18 +1,21 @@
 ﻿.sidebar {
     position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
+    top: 16px;
+    left: 16px;
+    bottom: 16px;
     width: var(--sidebar-width, 256px);
-    height: 100vh;
-    background: var(--background-elevated);
-    border-right: 1px solid var(--border);
+    height: auto;
+    background: rgba(255, 255, 255, 0.42);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 30px;
     display: flex;
     flex-direction: column;
     padding: 28px 18px 20px;
     z-index: 900;
     transition: width var(--transition-smooth), transform var(--transition-smooth);
-    box-shadow: 8px 0 30px rgba(15, 23, 42, 0.04);
+    box-shadow: 0 24px 64px rgba(15, 23, 42, 0.10), inset 0 1px 0 rgba(255,255,255,0.6);
 }
 
 /* Brand Logo Section */
@@ -30,15 +33,16 @@
 }
 
 .logoIcon {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    background: var(--foreground);
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #101828 0%, #4f46e5 45%, #ec4899 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16);
+    box-shadow: 0 12px 24px rgba(91, 108, 255, 0.2);
     flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,0.3);
 }
 
 .brandTitle {
@@ -90,20 +94,21 @@
     align-items: center;
     gap: 13px;
     padding: 12px 13px;
-    border-radius: 12px;
+    border-radius: 14px;
     color: var(--foreground-muted);
     text-decoration: none;
     font-size: 15px;
     font-weight: 600;
     font-family: var(--font-dm-sans), sans-serif;
-    transition: color var(--transition-fast), transform var(--transition-fast), background var(--transition-fast);
+    transition: color var(--transition-fast), transform var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
     z-index: 1;
 }
 
 .navItem:hover {
     color: var(--foreground);
     transform: translateX(3px);
-    background: var(--secondary);
+    background: rgba(255, 255, 255, 0.35);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
 }
 
 .navItem.active {
@@ -114,11 +119,11 @@
 .activePill {
     position: absolute;
     inset: 0;
-    background: #fff0f3;
-    border: 1px solid rgba(227, 77, 114, 0.18);
-    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(91,108,255,0.90), rgba(168,85,247,0.85));
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 14px;
     z-index: -1;
-    box-shadow: none;
+    box-shadow: 0 14px 30px rgba(91, 108, 255, 0.18);
 }
 
 .iconWrap {
@@ -152,7 +157,7 @@
 /* Bottom Section */
 .bottomSection {
     padding-top: 16px;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid rgba(148, 163, 184, 0.18);
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -163,9 +168,10 @@
     align-items: center;
     justify-content: space-between;
     padding: 8px 12px;
-    border-radius: var(--radius-md);
-    background: var(--secondary);
-    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: rgba(255,255,255,0.38);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    backdrop-filter: blur(12px);
 }
 
 .themeLabel {

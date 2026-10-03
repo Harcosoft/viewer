@@ -1,26 +1,29 @@
 :root {
-  /* Refined premium light theme */
-  --background: #f4f7ff;
-  --background-elevated: #ffffff;
-  --background-card: rgba(255, 255, 255, 0.82);
-  --foreground: #0f172a;
+  --background: #f3f7ff;
+  --background-elevated: rgba(255, 255, 255, 0.78);
+  --background-card: rgba(255, 255, 255, 0.62);
+  --foreground: #0b1120;
   --foreground-muted: #52607a;
 
   --primary: #5b6cff;
   --primary-hover: #4258f3;
-  --primary-glow: rgba(91, 108, 255, 0.2);
+  --primary-glow: rgba(91, 108, 255, 0.22);
 
-  --secondary: #eef3ff;
-  --secondary-hover: #dfe8ff;
+  --secondary: #eef4ff;
+  --secondary-hover: #e2ebff;
 
   --border: rgba(15, 23, 42, 0.08);
-  --border-hover: rgba(15, 23, 42, 0.16);
+  --border-hover: rgba(15, 23, 42, 0.15);
 
   --accent: #8b5cf6;
-  --accent-soft: #c4b5fd;
+  --accent-soft: #d7c7ff;
 
   --danger: #ef4444;
   --success: #10b981;
+
+  --glass: rgba(255, 255, 255, 0.4);
+  --glass-strong: rgba(255, 255, 255, 0.58);
+  --glass-border: rgba(148, 163, 184, 0.22);
 
   --sidebar-width: 240px;
   --sidebar-width-md: 78px;
@@ -35,15 +38,15 @@
   --premium-gradient: linear-gradient(135deg, #eef4ff 0%, #ffffff 42%, #f7f3ff 100%);
   --gold-gradient: linear-gradient(135deg, #facc15 0%, #f59e0b 52%, #facc15 100%);
 
-  --neon-glow: 0 0 20px rgba(91, 108, 255, 0.18), 0 0 44px rgba(139, 92, 246, 0.1);
+  --neon-glow: 0 0 20px rgba(91, 108, 255, 0.18), 0 0 44px rgba(139, 92, 246, 0.08);
 
-  --card-shadow: 0 10px 28px -10px rgba(15, 23, 42, 0.12), 0 4px 10px -6px rgba(15, 23, 42, 0.08);
-  --card-shadow-hover: 0 22px 46px -18px rgba(79, 70, 229, 0.18), 0 8px 20px -10px rgba(15, 23, 42, 0.12);
+  --card-shadow: 0 18px 45px -24px rgba(15, 23, 42, 0.18), 0 8px 25px rgba(91, 108, 255, 0.08);
+  --card-shadow-hover: 0 26px 55px -26px rgba(91, 108, 255, 0.18), 0 12px 30px rgba(15, 23, 42, 0.12);
 
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
-  --radius-xl: 28px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
 
   --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-smooth: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -170,20 +173,31 @@ html {
 }
 
 body {
-  background: var(--background);
-  background-image:
-    radial-gradient(circle at 5% 10%, rgba(91, 108, 255, 0.08) 0%, transparent 32%),
-    radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.08) 0%, transparent 30%),
-    radial-gradient(circle at 50% 0%, rgba(14, 165, 233, 0.06) 0%, transparent 28%);
+  background:
+    radial-gradient(circle at top left, rgba(91, 108, 255, 0.18), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(168, 85, 247, 0.18), transparent 26%),
+    linear-gradient(180deg, #f5f9ff 0%, #eef4ff 42%, #f8f5ff 100%);
   background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-sans);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  line-height: 1.55;
   font-weight: 500;
-  letter-spacing: 0;
+  letter-spacing: -0.01em;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(circle at center, black 52%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 ::selection {
@@ -294,13 +308,31 @@ button {
   cursor: pointer;
   border: none;
   background: none;
-  font-family: inherit;
+  appearance: none;
+  font-family: var(--font-sans);
+  font-size: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
   color: inherit;
   transition: all var(--transition-fast);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
-button:active {
-  transform: scale(0.96);
+button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+  transform: none;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 /* Glassmorphism utility */

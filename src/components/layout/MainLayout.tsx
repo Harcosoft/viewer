@@ -73,15 +73,21 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         // For now, AuthProvider reload will handle it.
     };
 
+    const isHomeRoute = pathname === '/';
+
     if (!isInitialized) {
+        if (isHomeRoute) {
+            return <LandingPage onLogin={handleLogin} />;
+        }
+
         return (
-            <div className={styles.loaderContainer}>
-                <Loader size="large" />
+            <div className={styles.layout}>
+                <div className={styles.loaderContainer}>
+                    <Loader size="large" />
+                </div>
             </div>
         );
     }
-
-    const isHomeRoute = pathname === '/';
 
     if (!isLoggedIn && !isHomeRoute && pathname !== '/profile') {
         return <LandingPage onLogin={handleLogin} />;

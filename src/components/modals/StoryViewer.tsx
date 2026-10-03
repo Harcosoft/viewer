@@ -93,17 +93,18 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ stories, initialStoryIndex, i
         const step = (interval / duration) * 100;
 
         const timer = setInterval(() => {
-            setProgress(prev => {
-                if (prev >= 100) {
-                    nextSlide();
-                    return 0;
-                }
-                return prev + step;
-            });
+            setProgress(prev => Math.min(prev + step, 100));
         }, interval);
 
         return () => clearInterval(timer);
-    }, [isOpen, slideIndex, storyIndex, nextSlide, currentSlide, isPaused]);
+    }, [isOpen, slideIndex, storyIndex, currentSlide, isPaused]);
+
+    useEffect(() => {
+        if (!isOpen || progress < 100) return;
+
+        setProgress(0);
+        nextSlide();
+    }, [isOpen, progress, nextSlide]);
 
     if (!isOpen || !currentStory || !currentSlide) return null;
 

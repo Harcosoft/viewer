@@ -30,8 +30,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const router = useRouter();
 
     const fetchSession = async () => {
+        console.log('fetchSession start');
         try {
             const res = await fetch('/api/auth');
+            console.log('fetchSession response', res.status, res.headers.get('content-type'));
             const contentType = res.headers.get('content-type');
 
             if (res.status === 401) {
@@ -63,18 +65,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     useEffect(() => {
+        console.log('AuthProvider effect running');
+        let isMounted = true;
+
+        const safeSetInitialized = () => {
+            console.log('safeSetInitialized called', { isMounted, user });
+            if (isMounted) {
+                setIsLoading(false);
+                setIsInitialized(true);
+            }
+        };
+
+        const fallbackTimer = window.setTimeout(() => {
+            safeSetInitialized();
+        }, 1500);
+
         // Fast path: check localStorage hint to show shell immediately
         const hasAuthHint = localStorage.getItem('viewer_demo_auth') === 'true';
         if (!hasAuthHint) {
             // If No hint, we still need to wait for the first check to decide if we show Landing
-            fetchSession();
+            fetchSession().finally(() => {
+                window.clearTimeout(fallbackTimer);
+                safeSetInitialized();
+            });
         } else {
             // If hint exists, assume logged in for shell, but verify in background
             setIsLoading(false);
-            // We set isInitialized to false initially so the shell knows we're still background checking
-            // but we can optimisticly show the app if MainLayout allows it
-            fetchSession();
+            fetchSession().finally(() => {
+                window.clearTimeout(fallbackTimer);
+                safeSetInitialized();
+            });
         }
+
+        return () => {
+            isMounted = false;
+            window.clearTimeout(fallbackTimer);
+        };
     }, []);
 
     const login = (userData: User) => {

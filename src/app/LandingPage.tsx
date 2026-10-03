@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import styles from './LandingPage.module.css';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Smartphone, ShieldCheck, Zap, Globe, AlertCircle, LogIn, UserPlus, CheckCircle2, Loader2, Eye, EyeOff, Github, Sparkles } from 'lucide-react';
+import { Smartphone, ShieldCheck, Zap, Globe, AlertCircle, LogIn, UserPlus, CheckCircle2, Loader2, Eye, EyeOff, Github, Sparkles, LayoutGrid, Rocket, BellRing } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -482,10 +482,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
     };
 
     const features = [
-        { icon: Smartphone, text: 'Mobile Ready' },
+        { icon: LayoutGrid, text: 'Smart Feed' },
         { icon: ShieldCheck, text: 'Secure Access' },
-        { icon: Zap, text: 'Ultra Fast' },
-        { icon: Globe, text: 'Global Reach' },
+        { icon: Rocket, text: 'Fast Launch' },
+        { icon: BellRing, text: 'Live Updates' },
     ];
 
     return (

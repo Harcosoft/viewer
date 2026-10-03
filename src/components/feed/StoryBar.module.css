@@ -1,12 +1,18 @@
-﻿.storyBar {
+.storyTrackWrapper {
+    position: relative;
+    min-width: 0;
+}
+
+.storyBar {
     display: flex;
-    gap: 18px;
-    padding: 20px 0;
+    gap: 16px;
+    padding: 16px 4px 12px;
     overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x proximity;
     scrollbar-width: none;
     -ms-overflow-style: none;
     border-bottom: 1px solid var(--border);
-    margin-bottom: 12px;
     position: relative;
 }
 
@@ -33,11 +39,23 @@
     gap: 8px;
     cursor: pointer;
     flex-shrink: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    scroll-snap-align: start;
     transition: all var(--transition-smooth);
 }
 
 .storyContainer:hover {
     transform: translateY(-4px);
+}
+
+.storyContainer:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 4px;
+    border-radius: 14px;
 }
 
 .storyContainer:hover .storyCircle {
@@ -126,6 +144,36 @@
     font-weight: 500;
     transition: all var(--transition-smooth);
     letter-spacing: -0.01em;
+}
+
+.scrollButton {
+    position: absolute;
+    top: 38px;
+    z-index: 2;
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: var(--background-elevated);
+    color: var(--foreground);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.14);
+    backdrop-filter: blur(12px);
+}
+
+.scrollButton:hover {
+    border-color: var(--border-hover);
+    background: var(--background-card);
+}
+
+.scrollButtonLeft {
+    left: 2px;
+}
+
+.scrollButtonRight {
+    right: 2px;
 }
 
 /* ===== STORY CREATOR STUDIO MODAL ===== */
@@ -219,6 +267,15 @@
     cursor: pointer;
     padding: 40px;
     text-align: center;
+    border: 0;
+    background: transparent;
+    font: inherit;
+}
+
+.emptyUploadState:focus-visible {
+    outline: 2px solid #818cf8;
+    outline-offset: 4px;
+    border-radius: 16px;
 }
 
 .emptyUploadIcon {
@@ -414,6 +471,53 @@
 .publishStoryBtn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 24px rgba(99, 102, 241, 0.5);
+}
+
+@media (max-width: 480px) {
+    .storyBar {
+        gap: 13px;
+        padding-top: 12px;
+    }
+
+    .storyCircle {
+        width: 64px;
+        height: 64px;
+    }
+
+    .username {
+        max-width: 70px;
+    }
+
+    .scrollButton {
+        top: 32px;
+        width: 32px;
+        height: 32px;
+    }
+
+    .creatorOverlay {
+        padding: 12px;
+    }
+
+    .creatorCard {
+        max-height: calc(100dvh - 24px);
+        overflow-y: auto;
+    }
+
+    .previewContainer {
+        height: min(42dvh, 380px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .storyCircle.hasNew,
+    .plusBadge,
+    .storyBar::after {
+        animation: none;
+    }
+
+    .storyBar {
+        scroll-behavior: auto;
+    }
 }
 
 @keyframes pulse-glow {

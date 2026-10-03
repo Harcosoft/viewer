@@ -1,11 +1,29 @@
 .layout {
     display: flex;
     min-height: 100vh;
+    background:
+        radial-gradient(circle at 0% 0%, rgba(91, 108, 255, 0.12), transparent 22%),
+        radial-gradient(circle at 100% 20%, rgba(168, 85, 247, 0.10), transparent 25%),
+        linear-gradient(180deg, rgba(245, 249, 255, 0.94), rgba(240, 244, 255, 0.96));
     background-color: var(--background);
-    background-image: linear-gradient(rgba(15, 23, 42, 0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(15, 23, 42, 0.025) 1px, transparent 1px);
-    background-size: 36px 36px;
+    background-image:
+        radial-gradient(circle at 0% 0%, rgba(91, 108, 255, 0.12), transparent 22%),
+        radial-gradient(circle at 100% 20%, rgba(168, 85, 247, 0.10), transparent 25%),
+        linear-gradient(rgba(148, 163, 184, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(245, 249, 255, 0.94), rgba(240, 244, 255, 0.96));
+    background-size: auto, auto, 36px 36px, 36px 36px, auto;
     color: var(--foreground);
     overflow-x: hidden;
+    position: relative;
+}
+
+.layout::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 25% 15%, rgba(255,255,255,0.7), transparent 28%);
+    pointer-events: none;
 }
 
 .mainContent {
@@ -17,6 +35,7 @@
     padding-left: var(--sidebar-width, 256px);
     padding-bottom: 32px;
     transition: padding var(--transition-smooth);
+    z-index: 1;
 }
 
 .contentWrapper {

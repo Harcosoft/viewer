@@ -59,7 +59,7 @@ export function usePushNotifications() {
                 return false;
             }
 
-            const registration = await navigator.serviceWorker.register('/sw.js');
+            const registration = await navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' });
             await navigator.serviceWorker.ready;
 
             const publicVapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
